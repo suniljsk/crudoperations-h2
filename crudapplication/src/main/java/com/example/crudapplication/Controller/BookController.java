@@ -1,5 +1,6 @@
 package com.example.crudapplication.Controller;
 
+import com.example.crudapplication.Exception.BookNotFoundException;
 import com.example.crudapplication.Repo.BookRepo;
 import com.example.crudapplication.model.Book;
 import lombok.Getter;
@@ -37,12 +38,14 @@ public class BookController {
     }
     @GetMapping("/getBookById/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id){
+
        Optional <Book> bookData= bookRepo.findById(id);
        if(bookData.isPresent()){
+
            return new ResponseEntity<>(bookData.get(),HttpStatus.OK);
        }
-       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+     throw  new BookNotFoundException("Request Not found");
+//        return new ResponseEntity<>(bookData.get(),HttpStatus.OK);
     }
     @PostMapping("/addBook")
     public ResponseEntity<Book> addBook(@RequestBody Book book){
@@ -76,7 +79,7 @@ public class BookController {
 
 
     }catch(Exception ex){
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
